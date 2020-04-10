@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class PlayerController : MonoBehaviour
     float jumpForce = 680.0f;
     float walkForce = 30.0f;
     float maxWalkSpeed = 2.0f;
+    float threshold = 0.2f;
 
     void Start()
     {
@@ -20,15 +22,26 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         // 跳躍
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && this.rigid2D.velocity.y == 0)
         {
             this.rigid2D.AddForce(transform.up * this.jumpForce);
         }
+
+        else if (Input.GetMouseButtonDown(0) && this.rigid2D.velocity.y == 0)
+        {
+            this.rigid2D.AddForce(transform.up * this.jumpForce);
+        }
+
+
 
         // 左右移動
         int key = 0;
         if (Input.GetKey(KeyCode.RightArrow)) key = 1;
         if (Input.GetKey(KeyCode.LeftArrow)) key = -1;
+
+        if (Input.acceleration.x > this.threshold) key = 1;
+        if (Input.acceleration.x < -this.threshold) key = -1;
+
 
         // 遊戲角色速度
         float speedx = Mathf.Abs(this.rigid2D.velocity.x);
@@ -47,5 +60,12 @@ public class PlayerController : MonoBehaviour
 
         // 依遊戲角色的速度改變動畫的速度
         this.animator.speed = speedx / 2.0f;
+    }
+
+    // 抵達終點
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("終點");
+        SceneManager.LoadScene("ClearScene");
     }
 }
