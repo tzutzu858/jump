@@ -21,14 +21,18 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+
+       
         // 跳躍
         if (Input.GetKeyDown(KeyCode.Space) && this.rigid2D.velocity.y == 0)
         {
+            this.animator.SetTrigger("JumpTrigger");
             this.rigid2D.AddForce(transform.up * this.jumpForce);
         }
 
         else if (Input.GetMouseButtonDown(0) && this.rigid2D.velocity.y == 0)
         {
+            this.animator.SetTrigger("JumpTrigger");
             this.rigid2D.AddForce(transform.up * this.jumpForce);
         }
 
@@ -58,8 +62,20 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(key, 1, 1);
         }
 
+
         // 依遊戲角色的速度改變動畫的速度
-        this.animator.speed = speedx / 2.0f;
+        if (this.rigid2D.velocity.y == 0)
+        {
+            this.animator.speed = speedx / 2.0f;
+        }
+        else
+        {
+            this.animator.speed = 1.0f;
+        }
+
+
+
+
     }
 
     // 抵達終點
